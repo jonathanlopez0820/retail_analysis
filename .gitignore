@@ -1,20 +1,27 @@
-.ipynb_checkpoints/
+# ---- Python ----
+*.py[cod]
 __pycache__/
-*.pyc
-.env/
-env/
-*.env
-.DS_Store
-.vscode/
-.mypy_cache/
+# compiled
+*.so
+
+# ---- Virtual / Conda envs ----
+.env
+.venv/
 .envrc
-*.sqlite3
-*.log
+
+# ---- Jupyter & VS Code ----
+.ipynb_checkpoints/
+.vscode/
+
+# ---- dbt build artefacts ----
+dbt_packages/
+target/
+
+# ---- Data folders (large files kept outside git) ----
 data/
 outputs/
-*.pdf
-*.html
-*.aux
-*.out
-*.toc
+
+# ---- OS / Misc ----
+.DS_Store
+*.log
 
