@@ -29,7 +29,7 @@ jobs:
         run: |
           mkdir -p ~/.dbt
           cat > ~/.dbt/profiles.yml <<'EOF'
-          retail_pg:
+          retail_360:
             outputs:
               dev:
                 type: postgres
