@@ -1,0 +1,49 @@
+name: dbt build
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: retail_admin
+          POSTGRES_PASSWORD: retail_pw
+          POSTGRES_DB: retail_warehouse
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U retail_admin -d retail_warehouse"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dbt-postgres
+        run: pip install --upgrade dbt-postgres==1.9.*
+      - name: Generate profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml <<'EOF'
+          retail_pg:
+            outputs:
+              dev:
+                type: postgres
+                host: localhost
+                port: 5432
+                user: retail_admin
+                password: retail_pw
+                dbname: retail_warehouse
+                schema: analytics
+                threads: 4
+            target: dev
+          EOF
+      - name: Run dbt build
+        run: |
+          cd dbt/retail_360
+          dbt deps
+          dbt build --fail-fast
